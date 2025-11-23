@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class ChatService {
-    private API_URL = 'http://localhost:3000/api/chat';
+    private API_URL = 'https://admatazz-dashboard.onrender.com/api/chat';
 
     constructor(private http: HttpClient) { }
 
