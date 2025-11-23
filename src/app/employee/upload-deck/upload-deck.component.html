@@ -1,0 +1,272 @@
+<div class="bg-gradient-to-br from-orange-50 via-yellow-50 to-amber-100 min-h-screen">
+
+    <!-- Header -->
+    <header class="bg-white/80 backdrop-blur-md border-b border-gray-200 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-4">
+
+                <div class="flex items-center space-x-3">
+                    <div class="bg-gradient-to-br from-yellow-400 to-orange-500 rounded-xl p-2 shadow-lg">
+                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                        </svg>
+                    </div>
+
+                    <div>
+                        <h1 class="text-xl font-bold text-gray-900">Admatazz</h1>
+                        <p class="text-xs text-gray-500">Upload Your Presentation</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN -->
+    <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="bg-white rounded-3xl shadow-xl overflow-hidden">
+
+            <!-- Top Banner -->
+            <div class="bg-gradient-to-r from-yellow-400 to-orange-500 p-8 text-white">
+                <h2 class="text-3xl font-bold mb-2">Upload Your Deck</h2>
+                <p class="text-orange-100">Share your presentation with the team</p>
+            </div>
+
+            <div class="p-8">
+
+                <!-- USER INFORMATION -->
+                <div class="mb-8">
+                    <div class="flex items-center mb-4">
+                        <div class="bg-orange-100 rounded-lg p-2 mr-3">
+                            <svg class="w-6 h-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900">User Information</h3>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Full Name</label>
+                            <input type="text" [value]="userName" disabled
+                                class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 bg-gray-50 text-gray-500" />
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Email Address</label>
+                            <input type="email" [value]="email" disabled
+                                class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 bg-gray-50 text-gray-500" />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- DECK DETAILS -->
+                <div class="mb-8">
+                    <div class="flex items-center mb-4">
+                        <div class="bg-yellow-100 rounded-lg p-2 mr-3">
+                            <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900">Deck Details</h3>
+                    </div>
+
+                    <div class="space-y-4">
+
+                        <!-- INDUSTRY DROPDOWN -->
+                        <div>
+                            <label class="block text-left mb-1 font-medium text-gray-700">Industry</label>
+                            <select name="industry" [(ngModel)]="industry"
+                                class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-400 focus:outline-none transition">
+                                <option value="" disabled selected>Select Industry</option>
+                                <option>Agriculture</option>
+                                <option>Farming</option>
+                                <option>Forestry</option>
+                                <option>Fishing</option>
+                                <option>Mining</option>
+                                <option>Oil & Gas</option>
+                                <option>Renewable Energy</option>
+                                <option>Environmental Services</option>
+                                <option>Automotive</option>
+                                <option>Aerospace</option>
+                                <option>Chemicals</option>
+                                <option>Electronics & Semiconductors</option>
+                                <option>Food & Beverage Manufacturing</option>
+                                <option>Pharmaceuticals</option>
+                                <option>Biotechnology</option>
+                                <option>Textiles & Apparel</option>
+                                <option>Plastics & Rubber</option>
+                                <option>Wood Products</option>
+                                <option>Machinery & Equipment</option>
+                                <option>Metal & Steel</option>
+                                <option>Furniture Manufacturing</option>
+                                <option>Construction</option>
+                                <option>Architecture</option>
+                                <option>Civil Engineering</option>
+                                <option>Industrial Engineering</option>
+                                <option>Urban Planning</option>
+                                <option>Information Technology (IT)</option>
+                                <option>Software Development</option>
+                                <option>Artificial Intelligence</option>
+                                <option>Cybersecurity</option>
+                                <option>Cloud Services</option>
+                                <option>Data Science & Analytics</option>
+                                <option>Telecommunications</option>
+                                <option>Hardware & Networking</option>
+                                <option>FinTech</option>
+                                <option>EdTech</option>
+                                <option>HealthTech</option>
+                                <option>Banking</option>
+                                <option>Insurance</option>
+                                <option>Investment Management</option>
+                                <option>Accounting</option>
+                                <option>Financial Advisory</option>
+                                <option>Venture Capital</option>
+                                <option>Private Equity</option>
+                                <option>Hospitals</option>
+                                <option>Clinics</option>
+                                <option>Diagnostics</option>
+                                <option>Medical Devices</option>
+                                <option>Mental Health Services</option>
+                                <option>Schools</option>
+                                <option>Colleges</option>
+                                <option>Universities</option>
+                                <option>Coaching & Training Institutes</option>
+                                <option>Retail (Offline)</option>
+                                <option>E-commerce</option>
+                                <option>Fashion & Apparel</option>
+                                <option>FMCG</option>
+                                <option>Luxury Goods</option>
+                                <option>Logistics</option>
+                                <option>Supply Chain</option>
+                                <option>Shipping</option>
+                                <option>Aviation</option>
+                                <option>Railways</option>
+                                <option>Warehousing</option>
+                                <option>Hotels</option>
+                                <option>Restaurants</option>
+                                <option>Travel Agencies</option>
+                                <option>Resorts</option>
+                                <option>Event Management</option>
+                                <option>Film & Television</option>
+                                <option>Music</option>
+                                <option>Gaming</option>
+                                <option>Publishing</option>
+                                <option>Advertising & Marketing</option>
+                                <option>Digital Media</option>
+                                <option>Legal</option>
+                                <option>Consulting</option>
+                                <option>HR & Recruitment</option>
+                                <option>Real Estate</option>
+                                <option>Business Process Outsourcing (BPO)</option>
+                                <option>Facility Management</option>
+                                <option>Central Government</option>
+                                <option>State Government</option>
+                                <option>Public Administration</option>
+                                <option>Public Safety</option>
+                                <option>Defense</option>
+                                <option>NGOs</option>
+                                <option>Charities</option>
+                                <option>Social Enterprises</option>
+                            </select>
+                        </div>
+
+                        <!-- DECK CATEGORY -->
+                        <div>
+                            <label class="block text-left mb-1 font-medium text-gray-700">Type of Deck</label>
+                            <select name="brandCategory" [(ngModel)]="brandCategory"
+                                class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-400 focus:outline-none transition">
+                                <option value="" disabled selected>Select Deck</option>
+                                <option>Strategy Deck</option>
+                                <option>Pitch Deck</option>
+                            </select>
+                        </div>
+
+                        <!-- FUNCTIONS DROPDOWN -->
+                        <div *ngIf="brandCategory">
+                            <label class="block text-left mb-1 font-medium text-gray-700">Functions of Deck</label>
+                            <select name="deckType" [(ngModel)]="deckType"
+                                class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-400 focus:outline-none transition">
+                                <option value="" disabled selected>Select Deck Type</option>
+                                <option>Creative</option>
+                                <option>SEO</option>
+                                <option>Media</option>
+                            </select>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- FILE UPLOAD -->
+                <div>
+                    <div class="flex items-center mb-4">
+                        <div class="bg-green-100 rounded-lg p-2 mr-3">
+                            <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900">Upload File</h3>
+                    </div>
+
+                    <div class="border-3 border-dashed border-gray-300 rounded-2xl p-8 text-center cursor-pointer"
+                        (click)="fileInput.click()">
+                        <input type="file" #fileInput class="hidden" accept=".ppt,.pptx,.pdf"
+                            (change)="onFileSelected($event)" />
+                        <p class="text-lg font-semibold text-gray-700 mb-2">Drop your file here or click</p>
+                        <p class="text-sm text-gray-500">Supports PPT, PPTX, PDF (Max 50MB)</p>
+                    </div>
+
+                    <!-- FILE PREVIEW -->
+                    <div *ngIf="selectedFile"
+                        class="mt-4 bg-orange-50 border-2 border-orange-200 rounded-xl p-4 flex items-center space-x-3">
+                        <div class="bg-orange-500 rounded-lg p-2">
+                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="font-semibold text-gray-900">{{ selectedFile.name }}</p>
+                            <p class="text-sm text-gray-600">{{ (selectedFile.size / 1024 / 1024) | number:'1.2-2' }} MB
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- UPLOADING ANIMATION -->
+                    <div *ngIf="isUploading" class="mt-4 flex items-center space-x-2 text-blue-600">
+                        <svg class="animate-spin h-5 w-5 mr-3 text-blue-500" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
+                            </circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+                        </svg>
+                        <span>Uploading...</span>
+                    </div>
+
+                    <!-- SUCCESS / ERROR MESSAGE -->
+                    <div *ngIf="successMessage" class="mt-4 p-4 bg-green-100 text-green-700 rounded-lg">
+                        {{ successMessage }}
+                    </div>
+                    <div *ngIf="errorMessage" class="mt-4 p-4 bg-red-100 text-red-700 rounded-lg">
+                        {{ errorMessage }}
+                    </div>
+
+                </div>
+
+                <!-- ACTION BUTTONS -->
+                <div class="mt-8 flex space-x-4" *ngIf="!isUploading">
+                    <button
+                        class="flex-1 bg-gradient-to-r from-yellow-400 to-orange-500 text-white font-semibold py-3 px-6 rounded-xl shadow-lg"
+                        [disabled]="!selectedFile || !industry || !brandCategory || !deckType" (click)="uploadFile()">
+                        Upload Deck
+                    </button>
+                </div>
+
+            </div>
+
+        </div>
+    </main>
+</div>

@@ -1,0 +1,9 @@
+// chatRoute.js
+const express = require("express");
+const router = express.Router();
+const chatController = require("./chatController");
+
+// POST /api/chat
+router.post("/", chatController.chat);
+
+module.exports = router;
