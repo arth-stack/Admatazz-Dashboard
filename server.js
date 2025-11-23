@@ -4,10 +4,26 @@ const cors = require("cors");
 const uploadRoutes = require("./src/app/backend/apis/route");
 const chatRoutes = require("./src/app/backend/apis/chatRoutes");
 
+// Load environment variables
 require("dotenv").config();
 
+// --------------------
+// Firebase initialization
+// --------------------
+const { initializeApp, cert } = require("firebase-admin/app");
+
+// Read service account from environment variable
+const serviceAccount = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT);
+
+initializeApp({
+  credential: cert(serviceAccount),
+});
+// --------------------
+
 const app = express();
-app.use(cors());
+app.use(cors({
+  origin: ["https://admatazz-dashboard.vercel.app"], // replace with your frontend URL
+}));
 app.use(express.json());
 
 // Define distPath once
