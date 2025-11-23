@@ -1,23 +1,5 @@
 {
-    "version": 2,
     "rewrites": [
-      {
-        "source": "/api/(.*)",
-        "destination": "/server.js"
-      },
-      {
-        "source": "/(.*)",
-        "destination": "/dist/admatazz-employee-project/browser/index.html"
-      }
-    ],
-    "builds": [
-      {
-        "src": "dist/admatazz-employee-project/browser/**",
-        "use": "@vercel/static"
-      },
-      {
-        "src": "server.js",
-        "use": "@vercel/node"
-      }
+      { "source": "/(.*)", "destination": "/index.html" }
     ]
   }  
