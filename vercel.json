@@ -7,12 +7,12 @@
       },
       {
         "source": "/(.*)",
-        "destination": "/dist/admatazz-employee-project/index.html"
+        "destination": "/dist/admatazz-employee-project/browser/index.html"
       }
     ],
     "builds": [
       {
-        "src": "dist/admatazz-employee-project/**",
+        "src": "dist/admatazz-employee-project/browser/**",
         "use": "@vercel/static"
       },
       {
