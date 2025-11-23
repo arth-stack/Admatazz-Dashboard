@@ -13,7 +13,7 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, "dist/admatazz-employee-project")));
 
 app.get("/*", (req, res) => {
-  res.sendFile(path.join(__dirname, "dist/admatazz-employee-project/index.html"));
+  res.sendFile(path.join(__dirname, "dist/admatazz-employee-project/browser/index.html"));
 });
 
 app.use("/api/upload", uploadRoutes);
