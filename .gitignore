@@ -42,3 +42,4 @@ testem.log
 Thumbs.db
 .env
 service-account.json
+.vercel

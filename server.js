@@ -10,12 +10,14 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// Serve Angular frontend
 app.use(express.static(path.join(__dirname, "dist/admatazz-employee-project")));
 
 app.get("/*", (req, res) => {
-  res.sendFile(path.join(__dirname, "dist/admatazz-employee-project/browser/index.html"));
+  res.sendFile(path.join(__dirname, "dist/admatazz-employee-project/index.html"));
 });
 
+// API routes
 app.use("/api/upload", uploadRoutes);
 app.use("/api/chat", chatRoutes);
 
