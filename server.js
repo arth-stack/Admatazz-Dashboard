@@ -13,8 +13,12 @@ app.use(express.json());
 // Serve Angular frontend
 app.use(express.static(path.join(__dirname, "dist/admatazz-employee-project")));
 
-app.get("/*", (req, res) => {
-  res.sendFile(path.join(__dirname, "dist/admatazz-employee-project/index.html"));
+app.use((req, res, next) => {
+    if (!req.path.startsWith("/api")) {
+        res.sendFile(path.join(distPath, "index.html"));
+    } else {
+        next();
+    }
 });
 
 // API routes
