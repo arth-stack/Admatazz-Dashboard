@@ -1,8 +1,10 @@
 const { google } = require("googleapis");
-const SERVICE_ACCOUNT_FILE = "./service-account.json";
+
+// Read the service account from environment variable
+const serviceAccount = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT);
 
 const auth = new google.auth.GoogleAuth({
-  keyFile: SERVICE_ACCOUNT_FILE,
+  credentials: serviceAccount, // use credentials object instead of keyFile
   scopes: ["https://www.googleapis.com/auth/drive"],
 });
 

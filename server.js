@@ -27,7 +27,7 @@ app.use(cors({
 app.use(express.json());
 
 // Define distPath once
-const distPath = path.join(__dirname, "dist/admatazz-employee-project/browser");
+const distPath = path.join(__dirname, "dist/admatazz-employee-project/");
 
 // Serve Angular frontend
 app.use(express.static(distPath));
