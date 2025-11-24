@@ -16,7 +16,7 @@ export interface AppUser {
 @Injectable({ providedIn: 'root' })
 export class AuthService {
 
-    private adminUsers = ['yash@admatazz.com', '']; // Add admin emails here
+    private adminUsers = ['', '']; // Add admin emails here
 
     constructor(
         private auth: AngularFireAuth,
