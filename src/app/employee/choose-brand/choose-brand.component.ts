@@ -43,4 +43,15 @@ export class ChooseBrandComponent {
     // Navigate to dashboard
     this.router.navigate(['/dashboard']);
   }
+
+  async logout() {
+    try {
+      await this.authService.signOut();
+      this.user = null;
+      this.router.navigate(['/login']);
+    } catch (err) {
+      console.error('Logout failed', err);
+      alert('Logout failed');
+    }
+  }
 }

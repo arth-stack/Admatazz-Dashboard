@@ -19,7 +19,7 @@ interface ChatSummary {
   styleUrls: ['./search-deck.component.css']
 })
 export class SearchDeckComponent implements OnInit, AfterViewChecked {
-  currentUser: { email: string; displayName: string } | null = null;
+  currentUser: { email: string; displayName: string; } | null = null;
   userMessage = '';
   loading = false;
 
@@ -38,9 +38,9 @@ export class SearchDeckComponent implements OnInit, AfterViewChecked {
     if (user) {
       this.currentUser = {
         email: user.email ?? 'Unknown',
-        displayName: user.displayName ?? 'Unknown'
+        displayName: user.displayName ?? 'Unknown',
       };
-    }
+    }    
 
     this.startNewChat();
   }

@@ -2,18 +2,13 @@
     <div class="flex h-screen">
 
         <!-- SIDEBAR (fixed height) -->
-        <aside class="w-64 bg-white/90 backdrop-blur-md border-r border-gray-200 flex flex-col shadow-lg">
+        <aside class="w-64 bg-white border-r border-gray-200 flex flex-col shadow-xs">
 
             <!-- Logo -->
-            <div class="p-4 flex items-center justify-between border-b border-gray-200">
-                <div class="flex items-center flex-1">
-                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTD9ltFZ6WMl3ZJaGyqmBQWmFO2hHRf3AjukQ&s"
-                        alt="Logo" class="w-full h-16 object-cover">
-                </div>
-                <button class="p-2 hover:bg-blue-100 rounded-lg transition">
-                    <i class="fas fa-bars text-gray-700"></i>
-                </button>
-            </div>
+            <a routerLink="/dashboard" class="bg-black p-4 flex items-center justify-center border-b border-gray-200">
+                <img src="https://admatazz.co.in/wp-content/uploads/2022/09/logo_f-ai-2-1.png" alt="Admatazz Logo"
+                    class="w-36 h-auto object-contain" />
+            </a>
 
             <!-- Navigation -->
             <nav class="flex-1 p-2 overflow-y-auto space-y-1">
@@ -26,7 +21,7 @@
                 </button>
 
                 <!-- Chat History -->
-                <div class="mt-6 mb-2 px-3 text-xs font-medium text-blue-400 uppercase tracking-wide">
+                <div class="mt-6 mb-2 px-3 text-xs font-medium text-blue-700 uppercase tracking-wide">
                     Chat History
                 </div>
 
@@ -49,10 +44,19 @@
 
             <!-- User Profile -->
             <div *ngIf="currentUser" class="p-3 border-t border-gray-200 flex items-center gap-3 mt-auto">
+                <!-- Avatar -->
                 <div
-                    class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-indigo-500 flex items-center justify-center text-white font-medium text-sm">
-                    {{ currentUser.displayName.charAt(0) + currentUser.displayName.split(' ').slice(-1)[0].charAt(0) }}
+                    class="w-10 h-10 rounded-full overflow-hidden border-2 border-gray-300 flex items-center justify-center bg-gray-200">
+
+                    <div
+                        class="w-full h-full flex items-center justify-center text-white font-medium text-sm bg-gradient-to-br from-blue-400 to-indigo-500">
+                        {{ currentUser.displayName.charAt(0) + (currentUser.displayName.split('
+                        ').slice(-1)[0]?.charAt(0) || '') }}
+                    </div>
+
                 </div>
+
+                <!-- User Info -->
                 <div class="flex flex-col">
                     <span class="text-sm font-medium">{{ currentUser.displayName }}</span>
                     <span class="text-xs text-gray-500">{{ currentUser.email }}</span>
@@ -67,9 +71,9 @@
 
             <!-- HEADER (fixed) -->
             <header
-                class="h-16 border-b border-gray-200 flex items-center justify-between px-6 bg-white/80 backdrop-blur-md sticky top-0 z-50 shadow-sm">
+                class="h-16 border-b border-gray-200 flex items-center justify-between px-6 bg-white sticky top-0 z-50 shadow-xs">
                 <div class="flex items-center gap-2">
-                    <span class="font-semibold text-gray-900 text-lg">Search Your Decks</span>
+                    <span class="font-semibold text-gray-900 text-lg">Search Decks</span>
                     <button class="p-1 hover:bg-blue-100 rounded transition">
                         <i class="fas fa-chevron-down text-xs text-gray-600"></i>
                     </button>

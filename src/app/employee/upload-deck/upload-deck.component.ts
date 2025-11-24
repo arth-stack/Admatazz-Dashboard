@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 import { AuthService } from '../../backend/auth.service';
 import { GoogleDriveService } from '../../backend/google-drive.service';
 
@@ -12,6 +13,7 @@ export class UploadDeckComponent {
 
   user: any = null;
   selectedFile: File | null = null;
+  uploading = false;
 
   email: string = '';
   userName: string = '';
@@ -25,7 +27,8 @@ export class UploadDeckComponent {
 
   constructor(
     private authService: AuthService,
-    private driveService: GoogleDriveService
+    private driveService: GoogleDriveService,
+    private router: Router
   ) {
     this.user = this.authService.getStoredUser();
     if (this.user) {
@@ -80,5 +83,16 @@ export class UploadDeckComponent {
     this.industry = '';
     this.brandCategory = '';
     this.deckType = '';
+  }
+
+  async logout() {
+    try {
+      await this.authService.signOut();
+      this.user = null;
+      this.router.navigate(['/login']);
+    } catch (err) {
+      console.error('Logout failed', err);
+      alert('Logout failed');
+    }
   }
 }

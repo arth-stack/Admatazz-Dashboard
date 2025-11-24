@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 import { AuthService } from '../../backend/auth.service';
 
 @Component({
@@ -8,19 +9,23 @@ import { AuthService } from '../../backend/auth.service';
 })
 export class DashboardComponent {
   user: any = null;
+  uploading = false;
 
   constructor(
     private authService: AuthService,
+    private router: Router
   ) {
     this.user = this.authService.getStoredUser();
   }
 
-  async login() {
+  async logout() {
     try {
-      this.user = await this.authService.googleSignIn();
-      alert(`Logged in as ${this.user.email}`);
+      await this.authService.signOut();
+      this.user = null;
+      this.router.navigate(['/login']);
     } catch (err) {
-      alert('Login failed: ' + err);
+      console.error('Logout failed', err);
+      alert('Logout failed');
     }
   }
 }
