@@ -11,6 +11,7 @@ export interface AppUser {
     token?: string;
     role: 'admin' | 'user';
     selectedBrand?: string | null;
+    blocked?: boolean;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -40,25 +41,33 @@ export class AuthService {
                 throw new Error('Only @admatazz.com accounts are allowed.');
             }
 
-            const token = await result.user?.getIdToken();
-            const isAdmin = this.isAdminUser(email);
-            const role: 'admin' | 'user' = isAdmin ? 'admin' : 'user';
+            let selectedBrand: string | null = null; 
+            let blocked = false;
 
-            // Fetch selectedBrand from Firestore inside runInInjectionContext
-            let selectedBrand: string | null = null;
             if (result.user?.uid) {
                 const doc = await runInInjectionContext(this.injector, async () => {
                     return this.firestore
-                        .collection<{ selectedBrand?: string }>('users')
+                        .collection<{ selectedBrand?: string; blocked?: boolean }>('users')
                         .doc(result.user!.uid)
                         .get()
                         .toPromise();
                 });
 
-                if (doc && doc.exists) {
-                    selectedBrand = doc.data()?.selectedBrand ?? null;
+                if (doc?.exists) {
+                    const userData = doc.data(); 
+                    selectedBrand = userData?.selectedBrand ?? null;
+                    blocked = userData?.blocked ?? false;
+                }
+
+                if (blocked) {
+                    await this.auth.signOut();
+                    throw new Error('Account Suspended. Contact Admin.');
                 }
             }
+
+            const token = await result.user?.getIdToken();
+            const isAdmin = this.isAdminUser(email);
+            const role: 'admin' | 'user' = isAdmin ? 'admin' : 'user';
 
             const userData: AppUser = {
                 uid: result.user?.uid,
@@ -66,7 +75,8 @@ export class AuthService {
                 displayName: result.user?.displayName,
                 token,
                 role,
-                selectedBrand
+                selectedBrand,
+                blocked
             };
 
             localStorage.setItem('authUser', JSON.stringify(userData));
@@ -123,5 +133,13 @@ export class AuthService {
     getStoredUser(): AppUser | null {
         const data = localStorage.getItem('authUser');
         return data ? JSON.parse(data) : null;
+    }
+
+    async setUserBlockedStatus(uid: string, blocked: boolean) {
+        return runInInjectionContext(this.injector, async () => {
+            await this.firestore.collection('users')
+                .doc(uid)
+                .set({ blocked }, { merge: true });
+        });
     }
 }

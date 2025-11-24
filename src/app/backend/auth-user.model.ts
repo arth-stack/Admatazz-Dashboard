@@ -8,4 +8,5 @@ export interface AuthUser {
     role: 'user' | 'admin';
     selectedBrand?: string; 
     lastLogin?: firebase.firestore.Timestamp;
+    blocked?: boolean; 
 }

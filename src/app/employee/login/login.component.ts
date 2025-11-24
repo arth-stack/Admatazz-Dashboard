@@ -24,12 +24,21 @@ export class LoginComponent implements OnInit {
   async login() {
     try {
       this.errorMsg = null;
+
       const user = await this.auth.googleSignIn();
+
+      // Check if the user is blocked
+      if (user.blocked) {
+        this.errorMsg = 'Account Suspended. Contact Admin.';
+        await this.auth.signOut();
+        return; // stop further navigation
+      }
 
       this.redirectUser(user);
 
-    } catch (err) {
-      this.errorMsg = 'Login failed. Please try again.';
+    } catch (err: any) {
+      // Show specific error if provided
+      this.errorMsg = err?.message || 'Login failed. Please try again.';
       console.error('Backend error:', err);
     }
   }
