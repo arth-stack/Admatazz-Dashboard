@@ -13,6 +13,7 @@ const chatLimiter = rateLimit({
   }
 });
 
+// Chat routes
 router.post("/chat", chatLimiter, chatWithAI);
 router.get("/suggestions", getSearchSuggestions);
 
