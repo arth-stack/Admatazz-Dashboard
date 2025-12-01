@@ -31,9 +31,14 @@ connectDB();
 // --------------------
 const { initializeApp, cert } = require("firebase-admin/app");
 
-const serviceAccount = require("./service-account.json");
-// For production/live server, you can use:
-//const serviceAccount = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT);
+// Decode service account from Base64 env variable
+if (!process.env.GOOGLE_SERVICE_ACCOUNT_B64) {
+  throw new Error("GOOGLE_SERVICE_ACCOUNT_B64 is not set");
+}
+
+const serviceAccount = JSON.parse(
+  Buffer.from(process.env.GOOGLE_SERVICE_ACCOUNT_B64, "base64").toString("utf8")
+);
 
 initializeApp({
   credential: cert(serviceAccount),

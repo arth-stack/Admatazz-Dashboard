@@ -2,9 +2,14 @@ const { google } = require("googleapis");
 const Deck = require("./model"); 
 const ROOT_FOLDER_ID = "0AJF2WP1hPW53Uk9PVA";
 
-// Initialize Drive
-const serviceAccount = require("../../../../service-account.json");
-//const serviceAccount = JSON.parse(process.env.SERVICE_ACCOUNT_JSON);
+// Decode service account from Base64 env variable
+if (!process.env.GOOGLE_SERVICE_ACCOUNT_B64) {
+  throw new Error("GOOGLE_SERVICE_ACCOUNT_B64 is not set");
+}
+
+const serviceAccount = JSON.parse(
+  Buffer.from(process.env.GOOGLE_SERVICE_ACCOUNT_B64, "base64").toString("utf8")
+);
 
 const auth = new google.auth.GoogleAuth({
   credentials: serviceAccount,
