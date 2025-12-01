@@ -13,7 +13,7 @@ const chatRoutes = require("./src/app/backend/apis/chatRoutes");
 // --------------------
 // MongoDB Connection
 // --------------------
-const MONGO_URI = process.env.MONGO_URI || "mongodb://127.0.0.1:27017/admatazzDB";
+const MONGO_URI = process.env.MONGO_URI;
 
 const connectDB = async () => {
   try {
