@@ -12,7 +12,7 @@ import { FormsModule } from '@angular/forms';
 import { LoginComponent } from './employee/login/login.component';
 import { DashboardComponent } from './employee/dashboard/dashboard.component';
 import { AdminDashboardComponent } from './employee/admin-dashboard/admin-dashboard.component';
-import { SearchDeckComponent } from './employee/search-deck/search-deck.component';
+import { SearchDeckComponent, LinkifyPipe } from './employee/search-deck/search-deck.component';
 import { ChooseBrandComponent } from './employee/choose-brand/choose-brand.component';
 import { UploadDeckComponent } from './employee/upload-deck/upload-deck.component';
 
@@ -33,8 +33,9 @@ import { UploadDeckComponent } from './employee/upload-deck/upload-deck.componen
     AngularFireAuthModule,
     AngularFirestoreModule,
     HttpClientModule,
-    FormsModule
-  ],
+    FormsModule,
+    LinkifyPipe
+],
   providers: [],
   bootstrap: [AppComponent]
 })

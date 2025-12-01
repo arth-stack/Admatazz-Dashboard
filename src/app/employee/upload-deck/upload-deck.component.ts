@@ -60,6 +60,8 @@ export class UploadDeckComponent {
     formData.append('industry', this.industry);
     formData.append('deckCategory', this.brandCategory);
     formData.append('deckType', this.deckType);
+    formData.append('uploadedBy', this.userName);      
+    formData.append('uploadedByEmail', this.email);    
 
     this.isUploading = true;
     this.successMessage = '';

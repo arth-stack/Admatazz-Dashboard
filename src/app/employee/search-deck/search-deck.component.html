@@ -1,30 +1,21 @@
 <div class="bg-gradient-to-br from-blue-50 via-blue-100 to-indigo-50 min-h-screen font-sans text-gray-900">
     <div class="flex h-screen">
 
-        <!-- SIDEBAR (fixed height) -->
+        <!-- SIDEBAR -->
         <aside class="w-64 bg-white border-r border-gray-200 flex flex-col shadow-xs">
-
-            <!-- Logo -->
             <a routerLink="/dashboard" class="bg-black p-4 flex items-center justify-center border-b border-gray-200">
                 <img src="https://admatazz.co.in/wp-content/uploads/2022/09/logo_f-ai-2-1.png" alt="Admatazz Logo"
                     class="w-36 h-auto object-contain" />
             </a>
 
-            <!-- Navigation -->
             <nav class="flex-1 p-2 overflow-y-auto space-y-1">
-
-                <!-- New Chat Button -->
                 <button (click)="startNewChat()"
                     class="w-full flex items-center gap-3 px-3 py-2 hover:bg-blue-100 rounded-lg transition text-left text-sm font-medium">
                     <i class="fas fa-pen text-blue-500"></i>
                     <span>New Chat</span>
                 </button>
 
-                <!-- Chat History -->
-                <div class="mt-6 mb-2 px-3 text-xs font-medium text-blue-700 uppercase tracking-wide">
-                    Chat History
-                </div>
-
+                <div class="mt-6 mb-2 px-3 text-xs font-medium text-blue-700 uppercase tracking-wide">Chat History</div>
                 <div *ngFor="let chat of allChats">
                     <button (click)="selectChat(chat.id)"
                         class="w-full flex items-center gap-3 px-3 py-2 hover:bg-blue-100 rounded-lg transition text-left text-sm font-medium">
@@ -42,41 +33,27 @@
                 </button>
             </div>
 
-            <!-- User Profile -->
             <div *ngIf="currentUser" class="p-3 border-t border-gray-200 flex items-center gap-3 mt-auto">
-                <!-- Avatar -->
                 <div
                     class="w-10 h-10 rounded-full overflow-hidden border-2 border-gray-300 flex items-center justify-center bg-gray-200">
-
                     <div
                         class="w-full h-full flex items-center justify-center text-white font-medium text-sm bg-gradient-to-br from-blue-400 to-indigo-500">
-                        {{ currentUser.displayName.charAt(0) + (currentUser.displayName.split('
-                        ').slice(-1)[0]?.charAt(0) || '') }}
+                        {{ getInitials(currentUser.displayName) }}
                     </div>
-
                 </div>
-
-                <!-- User Info -->
                 <div class="flex flex-col">
                     <span class="text-sm font-medium">{{ currentUser.displayName }}</span>
                     <span class="text-xs text-gray-500">{{ currentUser.email }}</span>
                 </div>
             </div>
-
-
         </aside>
 
-        <!-- MAIN CONTENT -->
+        <!-- MAIN CHAT -->
         <div class="flex-1 flex flex-col h-full">
-
-            <!-- HEADER (fixed) -->
             <header
                 class="h-16 border-b border-gray-200 flex items-center justify-between px-6 bg-white sticky top-0 z-50 shadow-xs">
                 <div class="flex items-center gap-2">
                     <span class="font-semibold text-gray-900 text-lg">Search Decks</span>
-                    <button class="p-1 hover:bg-blue-100 rounded transition">
-                        <i class="fas fa-chevron-down text-xs text-gray-600"></i>
-                    </button>
                 </div>
                 <div class="flex items-center gap-3">
                     <button class="p-2 hover:bg-blue-100 rounded transition">
@@ -85,87 +62,140 @@
                 </div>
             </header>
 
-            <!-- CHAT AREA (scrollable only in message section) -->
-            <main class="flex-1 flex flex-col overflow-hidden px-4 py-6">
+            <!-- PREDEFINED QUESTIONS -->
+            <div *ngIf="showGreeting" class="flex flex-wrap bg-white justify-center gap-2 px-4">
+                <button *ngFor="let q of predefinedQuestions" (click)="sendPredefined(q)" class="mt-5 px-4 py-4 bg-white border border-gray-300 rounded-full shadow-sm 
+               hover:bg-blue-50 hover:border-blue-400 transition text-sm font-medium">
+                    {{ q }}
+                </button>
+            </div>
 
-                <h1 class="text-4xl font-bold text-gray-900 mb-4 text-center animate-float">
+            <main class="flex-1 flex flex-col overflow-hidden bg-white">
+                <!-- GREETING -->
+                <h1 class="mt-30 text-3xl md:text-4xl font-semibold text-gray-900 mb-6 text-center animate-float"
+                    *ngIf="showGreeting">
                     {{ timeEmoji }} Hey {{ (currentUser?.displayName || '').split(' ')[0] }} ☕, what's on the agenda
                     today? 📝
                 </h1>
 
-                <!-- SCROLLABLE MESSAGE CONTAINER -->
-                <div #chatContainer class="w-full flex-1 overflow-y-auto space-y-4 mb-4">
+                <!-- SCROLLABLE CHAT -->
+                <div #chatContainer class="mt-10 flex-1 overflow-y-auto px-4 space-y-4 mb-4">
+                    <div *ngFor="let msg of chatHistory"
+                        class="flex w-full items-center transition-all duration-300 ease-in-out"
+                        [ngClass]="{'justify-end': msg.role === 'user', 'justify-start': msg.role !== 'user'}">
 
-                    <div *ngFor="let msg of chatHistory" class="transition-all duration-300 ease-in-out">
+                        <!-- AI Icon -->
+                        <ng-container *ngIf="msg.role !== 'user'">
+                            <img src="assets/robot.png" alt="AI"
+                                class="w-10 h-10 rounded-full border border-gray-200 mr-3 flex-shrink-0">
+                        </ng-container>
 
-                        <!-- User message -->
-                        <div *ngIf="msg.role === 'user'" class="flex justify-end">
-                            <div
-                                class="bg-blue-500 text-white px-4 py-2 rounded-lg max-w-xs break-words animate-fade-in">
-                                {{ msg.content }}
+                        <!-- Message bubble -->
+                        <div [ngClass]="{
+                            'bg-gray-100 text-gray-900 markdown-message': msg.role === 'assistant',
+                            'bg-blue-600 text-white': msg.role === 'user'
+                        }" class="px-4 py-3 rounded-xl max-w-[70%] break-words border border-transparent shadow-sm"
+                            style="white-space: pre-wrap;">
+
+                            <!-- Loader while AI is typing -->
+                            <ng-container *ngIf="msg.role === 'assistant' && msg.loading"
+                                class="flex items-center space-x-2">
+                                <!-- Show dots only if no content yet -->
+                                <div class="flex space-x-1" *ngIf="!msg.content">
+                                    <span class="dot animate-bounce"></span>
+                                    <span class="dot animate-bounce animation-delay-150"></span>
+                                    <span class="dot animate-bounce animation-delay-300"></span>
+                                </div>
+
+                                <!-- Typing message - apply markdown formatting -->
+                                <span *ngIf="msg.content" class="text-gray-500 text-sm markdown-content"
+                                    [innerHTML]="formatMarkdown(msg.content)"></span>
+                            </ng-container>
+
+                            <!-- Actual AI message with markdown support -->
+                            <span *ngIf="!msg.loading && msg.role === 'assistant'" class="markdown-content"
+                                [innerHTML]="formatMarkdown(msg.content)"></span>
+
+                            <!-- User message (no markdown) -->
+                            <span *ngIf="msg.role === 'user'" class="whitespace-pre-wrap">{{ msg.content }}</span>
+
+                            <!-- Decks display -->
+                            <div *ngIf="msg.decks && msg.decks.length > 0" class="mt-4 space-y-3">
+                                <div *ngFor="let deck of msg.decks; trackBy: trackDeck"
+                                    class="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
+                                    <h4 class="font-semibold text-gray-900 mb-2">{{ deck.title }}</h4>
+                                    <div class="grid grid-cols-2 gap-2 text-sm text-gray-600">
+                                        <div><span class="font-medium">Type:</span> {{ deck.deck_type }}</div>
+                                        <div><span class="font-medium">Category:</span> {{ deck.category }}</div>
+                                        <div><span class="font-medium">Industry:</span> {{ deck.industry }}</div>
+                                        <div><span class="font-medium">Uploaded:</span> {{ deck.uploaded_at | date }}
+                                        </div>
+                                    </div>
+                                    <div class="mt-3">
+                                        <a [href]="deck.file_path" target="_blank"
+                                            class="inline-flex items-center gap-2 px-3 py-1 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700 transition">
+                                            <i class="fas fa-download"></i>
+                                            Download Deck
+                                        </a>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
-                        <!-- Assistant message -->
-                        <div *ngIf="msg.role === 'assistant'" class="flex justify-start">
+                        <!-- User Icon -->
+                        <ng-container *ngIf="msg.role === 'user'">
                             <div
-                                class="bg-gray-200 text-gray-900 px-4 py-2 rounded-lg max-w-xs break-words animate-fade-in">
-                                {{ msg.content }}
+                                class="w-10 h-10 ml-3 rounded-full border border-gray-200 flex-shrink-0 flex items-center justify-center bg-gray-200 overflow-hidden">
+                                <div
+                                    class="w-full h-full flex items-center justify-center text-white font-medium text-sm bg-gradient-to-br from-blue-400 to-indigo-500">
+                                    {{ getInitials(currentUser?.displayName || '') }}
+                                </div>
                             </div>
-                        </div>
-
-                        <!-- System message -->
-                        <div *ngIf="msg.role === 'system'" class="text-center text-xs text-gray-500 italic">
-                            {{ msg.content }}
-                        </div>
+                        </ng-container>
                     </div>
-
-                    <!-- Typing indicator -->
-                    <div *ngIf="loading" class="flex justify-start">
-                        <div class="bg-gray-200 text-gray-900 px-4 py-2 rounded-lg max-w-xs animate-pulse">
-                            Admatazz is typing...
-                        </div>
-                    </div>
-
                 </div>
 
-                <!-- INPUT BOX (stays at bottom) -->
-                <div class="w-full relative mt-auto">
+                <!-- INPUT BAR -->
+                <div class="w-full border-t border-gray-200 p-4">
                     <div
-                        class="flex items-center gap-3 px-4 py-3 border border-blue-300 rounded-full hover:border-blue-400 transition bg-white shadow-md focus-within:ring-2 focus-within:ring-blue-300">
-
-                        <!-- Add Button -->
-                        <button class="text-blue-400 hover:text-blue-600 transition">
+                        class="flex items-center gap-3 px-4 py-2 bg-white rounded-full shadow-md border border-gray-200 focus-within:ring-2 focus-within:ring-blue-300">
+                        <button class="text-gray-400 hover:text-gray-600 transition">
                             <i class="fas fa-plus"></i>
                         </button>
 
-                        <!-- Input Field -->
-                        <input type="text" placeholder="Ask anything" [(ngModel)]="userMessage"
+                        <input type="text" placeholder="Ask anything..." [(ngModel)]="userMessage"
                             (keyup.enter)="sendMessage()"
-                            class="flex-1 outline-none text-gray-700 placeholder-blue-300 bg-transparent" />
+                            class="flex-1 bg-transparent outline-none text-gray-900 placeholder-gray-400" />
 
-                        <!-- Microphone -->
-                        <button class="text-blue-400 hover:text-blue-600 transition">
+                        <button class="text-gray-400 hover:text-gray-600 transition">
                             <i class="fas fa-microphone"></i>
                         </button>
-
-                        <!-- Settings -->
-                        <button class="text-blue-400 hover:text-blue-600 transition">
+                        <button class="text-gray-400 hover:text-gray-600 transition">
                             <i class="fas fa-sliders"></i>
                         </button>
 
-                        <!-- Send Button -->
-                        <button (click)="sendMessage()"
-                            class="bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-600 transition">
+                        <!-- Send / Stop buttons -->
+                        <button *ngIf="!loading" (click)="sendMessage()"
+                            class="bg-blue-600 text-white px-4 py-2 rounded-full hover:bg-blue-700 transition">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                                stroke="currentColor" class="size-5">
+                                stroke="currentColor" class="w-5 h-5">
                                 <path stroke-linecap="round" stroke-linejoin="round"
                                     d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
                             </svg>
                         </button>
+
+                        <button *ngIf="loading" (click)="stopAI()"
+                            class="bg-red-500 text-white px-4 py-2 rounded-full hover:bg-red-600 transition flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor" class="w-5 h-5">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M9 9.563C9 9.252 9.252 9 9.563 9h4.874c.311 0 .563.252.563.563v4.874c0 .311-.252.563-.563.563H9.564A.562.562 0 0 1 9 14.437V9.564Z" />
+                            </svg>
+                        </button>
                     </div>
                 </div>
-
             </main>
         </div>
     </div>
