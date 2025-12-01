@@ -3,7 +3,8 @@ const Deck = require("./model");
 const ROOT_FOLDER_ID = "0AJF2WP1hPW53Uk9PVA";
 
 // Initialize Drive
-const serviceAccount = require("../../../../service-account.json");
+//const serviceAccount = require("../../../../service-account.json");
+const serviceAccount = JSON.parse(process.env.SERVICE_ACCOUNT_JSON);
 
 const auth = new google.auth.GoogleAuth({
   credentials: serviceAccount,
