@@ -2,10 +2,9 @@ const express = require("express");
 const router = express.Router();
 const uploadController = require("./controller");
 const multer = require("multer");
-const path = require("path");
 const fs = require("fs");
 
-// Store uploads on disk to handle large files
+// Store uploads on disk
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         const dir = "/tmp/uploads";
@@ -17,6 +16,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-router.post("/", upload.single("file"), uploadController.uploadFile);
+// **Use .array('files') for multiple files**
+router.post("/", upload.array("files"), uploadController.uploadFile);
 
 module.exports = router;

@@ -12,7 +12,7 @@ import { GoogleDriveService } from '../../backend/google-drive.service';
 export class UploadDeckComponent {
 
   user: any = null;
-  selectedFile: File | null = null;
+  selectedFiles: File[] = [];
   uploading = false;
 
   email: string = '';
@@ -39,16 +39,18 @@ export class UploadDeckComponent {
     }
   }
 
-  onFileSelected(event: any) {
-    const file = event.target.files?.[0] || null;
-    this.selectedFile = file;
-    this.successMessage = ''; // clear success message when a new file is selected
-    this.errorMessage = '';
+  onFilesSelected(event: any) {
+    const files = event.target.files;
+    if (files) {
+      this.selectedFiles = Array.from(files);
+      this.successMessage = '';
+      this.errorMessage = '';
+    }
   }
 
-  uploadFile() {
-    if (!this.selectedFile) {
-      this.errorMessage = "Please select a file.";
+  uploadFiles() {
+    if (this.selectedFiles.length === 0) {
+      this.errorMessage = "Please select at least one file.";
       return;
     }
 
@@ -58,12 +60,12 @@ export class UploadDeckComponent {
     }
 
     const formData = new FormData();
-    formData.append('file', this.selectedFile);
+    this.selectedFiles.forEach(file => formData.append('files', file));
     formData.append('industry', this.industry);
     formData.append('deckCategory', this.brandCategory);
     formData.append('deckType', this.deckType);
-    formData.append('uploadedBy', this.userName);      
-    formData.append('uploadedByEmail', this.email);    
+    formData.append('uploadedBy', this.userName);
+    formData.append('uploadedByEmail', this.email);
 
     this.isUploading = true;
     this.successMessage = '';
@@ -72,7 +74,7 @@ export class UploadDeckComponent {
     this.driveService.uploadFile(formData).subscribe({
       next: () => {
         this.isUploading = false;
-        this.successMessage = "File uploaded successfully!";
+        this.successMessage = "Files uploaded successfully!";
         this.clearForm();
       },
       error: (err) => {
@@ -83,7 +85,7 @@ export class UploadDeckComponent {
   }
 
   clearForm() {
-    this.selectedFile = null;
+    this.selectedFiles = [];
     this.industry = '';
     this.brandCategory = '';
     this.deckType = '';

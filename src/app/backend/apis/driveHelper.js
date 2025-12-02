@@ -1,6 +1,5 @@
 const { google } = require("googleapis");
 const fs = require("fs");
-const path = require("path");
 const Deck = require("./model");
 
 const ROOT_FOLDER_ID = "0AJF2WP1hPW53Uk9PVA";
@@ -20,7 +19,6 @@ const auth = new google.auth.GoogleAuth({
 
 const drive = google.drive({ version: "v3", auth });
 
-// Folder cache
 const folderCache = new Map();
 
 function sanitize(str) {
@@ -63,7 +61,6 @@ async function findOrCreateFolder(folderName, parentFolderId) {
   return folderId;
 }
 
-// Upload file using streaming
 async function uploadAndSaveDeck(filePath, originalName, mimeType, industry, deckCategory, deckType, uploadedBy, uploadedByEmail) {
   let currentFolderId = ROOT_FOLDER_ID;
 
