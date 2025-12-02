@@ -1,8 +1,10 @@
 const { google } = require("googleapis");
-const Deck = require("./model"); 
+const { Readable } = require("stream");
+const Deck = require("./model");
+
 const ROOT_FOLDER_ID = "0AJF2WP1hPW53Uk9PVA";
 
-// Decode service account from Base64 env variable
+// Decode service account JSON
 if (!process.env.GOOGLE_SERVICE_ACCOUNT_B64) {
   throw new Error("GOOGLE_SERVICE_ACCOUNT_B64 is not set");
 }
@@ -15,17 +17,26 @@ const auth = new google.auth.GoogleAuth({
   credentials: serviceAccount,
   scopes: ["https://www.googleapis.com/auth/drive"],
 });
+
 const drive = google.drive({ version: "v3", auth });
 
-// Cache folder IDs in memory
+// Cache folders
 const folderCache = new Map();
 
-// Sanitize folder names
+// Convert buffer → stream for Google Drive API
+function bufferToStream(buffer) {
+  const readable = new Readable();
+  readable.push(buffer);
+  readable.push(null);
+  return readable;
+}
+
+// Clean folder names
 function sanitize(str) {
   return str.replace(/'/g, "\\'");
 }
 
-// Find or create folder with caching
+// Find or create folders with cache
 async function findOrCreateFolder(folderName, parentFolderId) {
   const cacheKey = `${parentFolderId}/${folderName}`;
   if (folderCache.has(cacheKey)) return folderCache.get(cacheKey);
@@ -41,6 +52,7 @@ async function findOrCreateFolder(folderName, parentFolderId) {
   });
 
   let folderId;
+
   if (search.data.files.length > 0) {
     folderId = search.data.files[0].id;
   } else {
@@ -53,6 +65,7 @@ async function findOrCreateFolder(folderName, parentFolderId) {
       fields: "id",
       supportsAllDrives: true,
     });
+
     folderId = folder.data.id;
   }
 
@@ -60,7 +73,7 @@ async function findOrCreateFolder(folderName, parentFolderId) {
   return folderId;
 }
 
-// Upload file to Drive using resumable upload
+// Upload file to Google Drive
 async function uploadFile(file, folderId) {
   const response = await drive.files.create(
     {
@@ -70,34 +83,51 @@ async function uploadFile(file, folderId) {
       },
       media: {
         mimeType: file.mimetype,
-        body: file.stream || Buffer.from(file.buffer),
+        body: bufferToStream(file.buffer), // FIXED ✔
       },
       fields: "id",
       supportsAllDrives: true,
     },
     {
-      // Enable resumable upload
-      onUploadProgress: evt =>
-        console.log(`Uploaded ${evt.bytesRead || 0} bytes of ${file.originalname}`),
+      onUploadProgress: (evt) =>
+        console.log(
+          `Uploaded ${evt.bytesRead || 0} bytes → ${file.originalname}`
+        ),
     }
   );
 
   return response.data.id;
 }
 
-// Upload file and save to MongoDB
-async function uploadAndSaveDeck(file, industry, deckCategory, deckType, uploadedBy, uploadedByEmail) {
+// Save to database
+async function uploadAndSaveDeck(
+  file,
+  industry,
+  deckCategory,
+  deckType,
+  uploadedBy,
+  uploadedByEmail
+) {
   if (!file) throw new Error("No file provided");
 
-  // Use cached or create folders
+  // Prepare folder structure
   let currentFolderId = ROOT_FOLDER_ID;
-  if (industry) currentFolderId = await findOrCreateFolder(industry, currentFolderId);
-  if (deckCategory) currentFolderId = await findOrCreateFolder(deckCategory, currentFolderId);
-  if (deckType) currentFolderId = await findOrCreateFolder(deckType, currentFolderId);
 
+  if (industry)
+    currentFolderId = await findOrCreateFolder(industry, currentFolderId);
+
+  if (deckCategory)
+    currentFolderId = await findOrCreateFolder(deckCategory, currentFolderId);
+
+  if (deckType)
+    currentFolderId = await findOrCreateFolder(deckType, currentFolderId);
+
+  // Upload file to Google Drive
   const fileId = await uploadFile(file, currentFolderId);
+
   const driveLink = `https://drive.google.com/uc?export=download&id=${fileId}`;
 
+  // Save in MongoDB
   const deck = new Deck({
     title: file.originalname,
     file_path: driveLink,
