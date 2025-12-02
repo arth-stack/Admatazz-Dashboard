@@ -50,8 +50,8 @@ initializeApp({
 const app = express();
 
 app.use(cors({
-  origin: ["http://localhost:4200"], // Replace with frontend URL in production
-  //origin: ["https://admatazz-dashboard.vercel.app"]
+  //origin: ["http://localhost:4200"], // Replace with frontend URL in production
+  origin: ["https://admatazz-dashboard.vercel.app"]
 }));
 app.use(express.json());
 
