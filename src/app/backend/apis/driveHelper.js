@@ -1,10 +1,10 @@
 const { google } = require("googleapis");
-const { Readable } = require("stream");
+const fs = require("fs");
+const path = require("path");
 const Deck = require("./model");
 
 const ROOT_FOLDER_ID = "0AJF2WP1hPW53Uk9PVA";
 
-// Decode service account JSON
 if (!process.env.GOOGLE_SERVICE_ACCOUNT_B64) {
   throw new Error("GOOGLE_SERVICE_ACCOUNT_B64 is not set");
 }
@@ -20,23 +20,13 @@ const auth = new google.auth.GoogleAuth({
 
 const drive = google.drive({ version: "v3", auth });
 
-// Cache folders
+// Folder cache
 const folderCache = new Map();
 
-// Convert buffer → stream for Google Drive API
-function bufferToStream(buffer) {
-  const readable = new Readable();
-  readable.push(buffer);
-  readable.push(null);
-  return readable;
-}
-
-// Clean folder names
 function sanitize(str) {
   return str.replace(/'/g, "\\'");
 }
 
-// Find or create folders with cache
 async function findOrCreateFolder(folderName, parentFolderId) {
   const cacheKey = `${parentFolderId}/${folderName}`;
   if (folderCache.has(cacheKey)) return folderCache.get(cacheKey);
@@ -73,79 +63,37 @@ async function findOrCreateFolder(folderName, parentFolderId) {
   return folderId;
 }
 
-// Upload file to Google Drive
-async function uploadFile(file, folderId) {
-  const response = await drive.files.create(
-    {
-      requestBody: {
-        name: file.originalname,
-        parents: [folderId],
-      },
-      media: {
-        mimeType: file.mimetype,
-        body: bufferToStream(file.buffer), // FIXED ✔
-      },
-      fields: "id",
-      supportsAllDrives: true,
-    },
-    {
-      onUploadProgress: (evt) =>
-        console.log(
-          `Uploaded ${evt.bytesRead || 0} bytes → ${file.originalname}`
-        ),
-    }
-  );
-
-  return response.data.id;
-}
-
-// Save to database
-async function uploadAndSaveDeck(
-  file,
-  industry,
-  deckCategory,
-  deckType,
-  uploadedBy,
-  uploadedByEmail
-) {
-  if (!file) throw new Error("No file provided");
-
-  // Prepare folder structure
+// Upload file using streaming
+async function uploadAndSaveDeck(filePath, originalName, mimeType, industry, deckCategory, deckType, uploadedBy, uploadedByEmail) {
   let currentFolderId = ROOT_FOLDER_ID;
 
-  if (industry)
-    currentFolderId = await findOrCreateFolder(industry, currentFolderId);
+  if (industry) currentFolderId = await findOrCreateFolder(industry, currentFolderId);
+  if (deckCategory) currentFolderId = await findOrCreateFolder(deckCategory, currentFolderId);
+  if (deckType) currentFolderId = await findOrCreateFolder(deckType, currentFolderId);
 
-  if (deckCategory)
-    currentFolderId = await findOrCreateFolder(deckCategory, currentFolderId);
-
-  if (deckType)
-    currentFolderId = await findOrCreateFolder(deckType, currentFolderId);
-
-  // Upload file to Google Drive
-  const fileId = await uploadFile(file, currentFolderId);
+  const fileId = await drive.files.create({
+    requestBody: { name: originalName, parents: [currentFolderId] },
+    media: { body: fs.createReadStream(filePath), mimeType },
+    fields: "id",
+    supportsAllDrives: true,
+  }).then(res => res.data.id);
 
   const driveLink = `https://drive.google.com/uc?export=download&id=${fileId}`;
 
-  // Save in MongoDB
   const deck = new Deck({
-    title: file.originalname,
+    title: originalName,
     file_path: driveLink,
     deck_type: deckType,
     category: deckCategory,
-    industry: industry,
+    industry,
     uploaded_by: uploadedBy,
     uploaded_by_email: uploadedByEmail,
     status: "uploaded",
   });
 
   await deck.save();
+  fs.unlinkSync(filePath); // delete temp file after upload
   return deck;
 }
 
-module.exports = {
-  findOrCreateFolder,
-  uploadFile,
-  uploadAndSaveDeck,
-  ROOT_FOLDER_ID,
-};
+module.exports = { findOrCreateFolder, uploadAndSaveDeck, ROOT_FOLDER_ID };

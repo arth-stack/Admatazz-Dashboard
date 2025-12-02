@@ -16,6 +16,7 @@ export class UploadDeckComponent {
   uploading = false;
 
   email: string = '';
+  selectedBrand: string = '';
   userName: string = '';
   industry: string = '';
   brandCategory: string = '';
@@ -34,6 +35,7 @@ export class UploadDeckComponent {
     if (this.user) {
       this.userName = this.user.displayName;
       this.email = this.user.email;
+      this.selectedBrand = this.user.selectedBrand;
     }
   }
 

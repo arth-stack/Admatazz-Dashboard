@@ -9,8 +9,11 @@ const handleUpload = async (req, res) => {
     const { industry, deckCategory, deckType, uploadedBy, uploadedByEmail } =
       req.body;
 
+    // Upload file and save deck (disk streaming)
     const deck = await uploadAndSaveDeck(
-      file,
+      file.path,        // file path on disk
+      file.originalname,
+      file.mimetype,
       industry,
       deckCategory,
       deckType,
